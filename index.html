@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cut-off Budgeting System</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .expense-row {
+            display: flex;
+            gap: 10px;
+        }
+        .live-total {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        function addExpense() {
+            let container = document.getElementById("expenses");
+            let div = document.createElement("div");
+            div.classList.add("expense-row");
+
+            div.innerHTML = `
+                <input type="text" name="expense_name[]" placeholder="Expense Name" required>
+                <input type="number" step="0.01" name="expense_amount[]" placeholder="Amount" oninput="calculateTotal()" required>
+            `;
+
+            container.appendChild(div);
+        }
+
+        function calculateTotal() {
+            let amounts = document.getElementsByName("expense_amount[]");
+            let total = 0;
+
+            amounts.forEach(input => {
+                total += parseFloat(input.value) || 0;
+            });
+
+            document.getElementById("liveTotal").innerText = total.toFixed(2);
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <h2>💰 Cut-off Budgeting System</h2>
+
+    <form method="POST" action="process.php">
+        <label>Cut-off:</label>
+        <select name="cutoff" required>
+            <option value="">Select Cut-off</option>
+            <option value="10">10th Cut-off</option>
+            <option value="25">25th Cut-off</option>
+        </select>
+
+        <label>Salary:</label>
+        <input type="number" step="0.01" name="salary" required>
+
+        <h3>Expenses</h3>
+        <div id="expenses">
+            <div class="expense-row">
+                <input type="text" name="expense_name[]" required>
+                <input type="number" step="0.01" name="expense_amount[]" oninput="calculateTotal()" required>
+            </div>
+        </div>
+
+        <button type="button" onclick="addExpense()">+ Add Expense</button>
+
+        <div class="live-total">
+            Total: ₱<span id="liveTotal">0.00</span>
+        </div>
+
+        <button type="submit">Calculate</button>
+    </form>
+</div>
+
+</body>
+</html>
